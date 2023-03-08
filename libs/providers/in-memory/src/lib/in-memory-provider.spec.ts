@@ -7,20 +7,24 @@ import {
 } from '@openfeature/js-sdk';
 import { InMemoryProvider } from './in-memory-provider';
 
+// move this out so it's globally accessable.
+const flags = {
+  'a-string-flag': 'configured-value',
+  'a-boolean-flag': true,
+  'a-numeric-flag': 42,
+};
+
 describe(InMemoryProvider, () => {
   let provider: InMemoryProvider;
   beforeEach(() => {
-    const flags = {
-      'a-string-flag': 'configured-value',
-      'a-boolean-flag': true,
-      'a-numeric-flag': 42,
-    };
     provider = new InMemoryProvider(flags);
   });
 
   describe('boolean flags', () => {
     it('resolves to the configured value for a known flag', async () => {
-      const resolution = await provider.resolveBooleanEvaluation('a-boolean-flag');
+      // modify the object.
+      flags['a-boolean-flag'] = false;
+      const resolution = await provider.resolveBooleanEvaluation('a-boolean-flag'); // this test fails.
       verifyResolution(resolution, { expectedValue: true });
     });
 
